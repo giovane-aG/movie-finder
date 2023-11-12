@@ -1,6 +1,6 @@
 const initialState = [];
 
-const moviesReducer = (movies: [], action: any) => {
+const moviesReducer = (movies = initialState, action: any) => {
   switch (action.type) {
     case "setMovies":
       if (action?.movies?.length) return action.movies;
