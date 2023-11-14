@@ -4,17 +4,30 @@ import MovieCard from "./components/MovieCard.tsx";
 import moviesReducer from "./reducers/app.reducer.ts";
 import SearchIcon from "./search.svg";
 
-import React, { useEffect, useState, useReducer } from "react";
+import React, { useEffect, useState, useReducer, useMemo } from "react";
 
 function App() {
+  let firstRender: boolean = true;
   const [movies, dispatch] = useReducer(moviesReducer, []);
   const [searchTerm, setSearchTerm] = useState<string>("Batman");
+
+  const processorWorkoutSession = () => {
+    console.time(processorWorkoutSession.name);
+    const result = Array(10000000)
+      .fill(Math.random())
+      .reduce((prev, current) => prev + current, 0);
+    console.timeEnd(processorWorkoutSession.name);
+
+    return result;
+  };
+  const memoizedValue = useMemo(() => processorWorkoutSession, []);
 
   const updateSearchTerm = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
 
   const searchMovies = async (title?: string) => {
+    firstRender = false;
     const movies = await getMovies(title);
     dispatch({
       type: "setMovies",
@@ -23,7 +36,11 @@ function App() {
   };
 
   useEffect(() => {
-    searchMovies("Batman");
+    if (firstRender) {
+      console.log(movies.length);
+      searchMovies("Batman");
+      processorWorkoutSession();
+    }
   }, []);
 
   return (
